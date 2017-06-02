@@ -1,7 +1,7 @@
 let i = 0;
 let j = 0;
 let bubbleSort, insertionSort;
-let numberOfElements = 200;
+let numberOfElements = 1280;
 let startTime, endTime;
 let finished = false;
 
@@ -17,9 +17,9 @@ bubbleSort = {
                 let temp = this.data[j].y;
                 this.data[j].y = this.data[i].y;
                 this.data[i].y = temp;
-                this.data.forEach((point) => { point.draw(); });
             }
         }
+        this.data.forEach((point) => { point.draw(); });
     },
 };
 
@@ -41,55 +41,7 @@ insertionSort = {
     }
 };
 
-quickSort = {
-    name: 'Quick sort',
-    init: function(){
-        this.data = generateRandomData();
-    },
-    stepSort: function(){
-        this.sort();
-        clearCanvas();
-        this.data.forEach((point) => { point.draw(); });
-    },
-    sort: function(left, right){
-        left = left || 0;
-        right = right || this.data.length - 1;
-        let index = this.partition(left, right);
-
-
-        if(left < index - 1){
-            this.sort(left, index - 1);
-        }
-        if(right > index) {
-            this.sort(index, right);
-        }
-
-    },
-    partition: function(left, right){
-        let pivot = Math.floor((left + right) / 2);
-
-        while (left <= right) {
-            while(this.data[left].y < this.data[pivot].y) { left++; }
-            while(this.data[right].y > this.data[pivot].y) { right--; }
-
-            if(left <= right) {
-                this.swapElements(left, right);
-                left++;
-                right--;
-            }
-        }
-
-        return left;
-    },
-    swapElements: function(i, j){
-        let temp = this.data[i].y;
-        this.data[i].y = this.data[j].y;
-        this.data[j].y = temp;
-
-    }
-};
-
-let sortObjects = [quickSort];
+let sortObjects = [insertionSort, bubbleSort];
 
 class Point {
     constructor(x, y){
@@ -98,8 +50,8 @@ class Point {
     }
 
     draw(){
-        fill(color(this.y, this.y, this.y));
-        rect(this.x * 2, 480, 2, - this.y);
+        fill(color(map(this.y, 0, 200, 0, 100), 50, 50));
+        rect(this.x, 480, 1, - this.y);
     }
 }
 
@@ -118,15 +70,12 @@ function setup(){
 
     bubbleSort.init();
     insertionSort.init();
-    quickSort.init();
+    colorMode(HSL, 100);
     startTime = new Date();
 }
 
 function draw(){
     if(i < numberOfElements){
-        if(sortObjects[j].name === 'Quick sort'){
-            i = numberOfElements;
-        }
         sortObjects[j].stepSort(i);
         i++;
     } else {
@@ -153,5 +102,5 @@ function draw(){
 function clearCanvas(){
     noStroke();
     fill(color(255, 255, 255));
-    rect(0, 0, 640, 480);
+    rect(0, 0, 1280, 480);
 }
