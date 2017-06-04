@@ -52,6 +52,7 @@ let InsertionSort = {
             this.data[this.j + 1].y = this.dataElement;
             this.dataElement = this.data[this.i].y;
             this.j = this.i - 1;
+            this.i = this.i + 1;
         }
         CanvasHelper.clearCanvas();
         this.data.forEach(point => point.draw());
