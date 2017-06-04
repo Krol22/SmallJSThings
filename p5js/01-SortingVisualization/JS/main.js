@@ -16,18 +16,42 @@ function setup() {
     let canvas = createCanvas(CanvasHelper.width, CanvasHelper.height);
     data = generateRandomData(data);
     InsertionSort.init(data);
+    BubbleSort.init(data);
     CanvasHelper.clearCanvas();
 }
 
 function draw(){
-    InsertionSort.visualizate(); 
+    BubbleSort.visualizate();
 }
 
 let Sort = {
     swap: function(data, i, j){
-        let temp = data[i];
-        data[i] = data[j];
-        data[j] = temp;
+        let temp = data[i].y;
+        data[i].y = data[j].y;
+        data[j].y = temp;
+    }
+}
+
+let BubbleSort = {
+    name: 'Bubble sort',
+    i: 0,
+    j: 0,
+    finished: false,
+    init: function(data){
+        this.data = data;
+    },
+    visualizate: function(){
+        if(this.j < this.data.length - 1){
+            this.j++;
+            if(this.data[this.j].y >= this.data[this.i].y){
+                Sort.swap(this.data, this.i, this.j);
+                CanvasHelper.clearCanvas();
+                this.data.forEach(point => point.draw());
+            }
+        } else {
+            this.i++;
+            this.j = 0;
+        }
     }
 }
 
@@ -38,11 +62,13 @@ let InsertionSort = {
     finished: false,
     init: function(data){
         this.data = data;
-        this.j = 0;
         this.dataElement = this.data[this.i].y
     },
     visualizate: function(){
-        this.sort();
+        if(this.i <= this.data.length)
+            this.sort();
+        else 
+            this.finished = true;
     },
     sort: function(){
         if(this.j >= 0 && this.data[this.j].y > this.dataElement){
@@ -50,9 +76,11 @@ let InsertionSort = {
             this.j = this.j - 1;
         } else {
             this.data[this.j + 1].y = this.dataElement;
-            this.dataElement = this.data[this.i].y;
-            this.j = this.i - 1;
-            this.i = this.i + 1;
+            if(this.data.length > this.i){
+                this.dataElement = this.data[this.i].y;
+                this.j = this.i - 1;
+                this.i = this.i + 1;
+            }
         }
         CanvasHelper.clearCanvas();
         this.data.forEach(point => point.draw());
@@ -63,7 +91,7 @@ let CanvasHelper = {
     init(width, height, numberOfElements){
         this.width = width || 640;
         this.height = height || 320;
-        this.numberOfElements = numberOfElements || 40;
+        this.numberOfElements = numberOfElements || 64;
     },
 
     clearCanvas(){
