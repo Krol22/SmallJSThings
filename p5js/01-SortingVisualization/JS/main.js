@@ -15,13 +15,14 @@ function setup() {
     CanvasHelper.init();
     let canvas = createCanvas(CanvasHelper.width, CanvasHelper.height);
     data = generateRandomData(data);
-    InsertionSort.init(data);
-    BubbleSort.init(data);
+    InsertionSort.init(data.slice());
+    BubbleSort.init(data.slice());
     CanvasHelper.clearCanvas();
 }
 
 function draw(){
-    BubbleSort.visualizate();
+    InsertionSort.visualizate();
+    //BubbleSort.visualizate();
 }
 
 let Sort = {
@@ -41,13 +42,19 @@ let BubbleSort = {
         this.data = data;
     },
     visualizate: function(){
+        if(this.i < this.data.length)
+            this.sort();
+        else
+            this.finished = true;
+    },
+    sort: function() {
         if(this.j < this.data.length - 1){
-            this.j++;
             if(this.data[this.j].y >= this.data[this.i].y){
                 Sort.swap(this.data, this.i, this.j);
                 CanvasHelper.clearCanvas();
                 this.data.forEach(point => point.draw());
             }
+            this.j++;
         } else {
             this.i++;
             this.j = 0;
@@ -67,7 +74,7 @@ let InsertionSort = {
     visualizate: function(){
         if(this.i <= this.data.length)
             this.sort();
-        else 
+        else
             this.finished = true;
     },
     sort: function(){
@@ -109,12 +116,9 @@ let Point = {
     },
     draw(){
         fill(color(map(this.y, 0, 200, 0, 100), 50, 50));
-        rect(this.x * this.width, this.y, this.width, -this.y);
+        rect(this.x * this.width, 320, this.width, -this.y);
     },
     clear(){
         rect(this.x * width, this.y, this.width, CanvasHelper.height);
     }
 }
-
-
-
