@@ -1,6 +1,6 @@
-let data = [];
-
-function generateRandomData(array) {
+let step = 0;
+function generateRandomData() {
+    let array = [];
     for (let i = 0; i < CanvasHelper.numberOfElements; i++){
         let randomValue = round(random(200));
         let point = Object.create(Point);
@@ -14,15 +14,19 @@ function setup() {
     colorMode(HSL, 100);
     CanvasHelper.init();
     let canvas = createCanvas(CanvasHelper.width, CanvasHelper.height);
-    data = generateRandomData(data);
-    InsertionSort.init(data.slice());
-    BubbleSort.init(data.slice());
+    InsertionSort.init(generateRandomData());
+    BubbleSort.init(generateRandomData());
     CanvasHelper.clearCanvas();
 }
 
 function draw(){
-    InsertionSort.visualizate();
-    //BubbleSort.visualizate();
+    if(step % 2){
+        InsertionSort.visualizate();
+    }
+    else{
+        BubbleSort.visualizate();
+    }
+    step++;
 }
 
 let Sort = {
@@ -49,13 +53,19 @@ let BubbleSort = {
     },
     sort: function() {
         if(this.j < this.data.length - 1){
+            this.data[this.j].drawSelected(340);
+            this.data[this.i].drawSelected(340);
             if(this.data[this.j].y >= this.data[this.i].y){
                 Sort.swap(this.data, this.i, this.j);
-                CanvasHelper.clearCanvas();
-                this.data.forEach(point => point.draw());
+                CanvasHelper.clearCanvas(340);
+                this.data.forEach(point => point.draw(340));
             }
             this.j++;
+            this.data[this.j - 1].clear(340);
+            this.data[this.j - 1].draw(340);
         } else {
+            this.data[this.i].clear(340);
+            this.data[this.i].draw(340);
             this.i++;
             this.j = 0;
         }
@@ -72,10 +82,12 @@ let InsertionSort = {
         this.dataElement = this.data[this.i].y
     },
     visualizate: function(){
-        if(this.i <= this.data.length)
+        if(this.i < this.data.length) {
             this.sort();
-        else
+        } else {
+            this.sort();
             this.finished = true;
+        }
     },
     sort: function(){
         if(this.j >= 0 && this.data[this.j].y > this.dataElement){
@@ -96,15 +108,16 @@ let InsertionSort = {
 
 let CanvasHelper = {
     init(width, height, numberOfElements){
-        this.width = width || 640;
+        this.width = width || 700;
         this.height = height || 320;
-        this.numberOfElements = numberOfElements || 64;
+        this.numberOfElements = numberOfElements || 32;
     },
 
-    clearCanvas(){
+    clearCanvas(offsetX){
+        offsetX = offsetX || 0;
         noStroke();
         fill(color(255, 255, 255));
-        rect(0, 0, this.width, this.height);
+        rect(0 + offsetX, 0, 320, this.height);
     },
 }
 
@@ -114,11 +127,22 @@ let Point = {
         this.y = y;
         this.width = width || 10;
     },
-    draw(){
+    draw(offsetX){
+        offsetX = offsetX || 0;
+        noStroke();
         fill(color(map(this.y, 0, 200, 0, 100), 50, 50));
-        rect(this.x * this.width, 320, this.width, -this.y);
+        rect(this.x * this.width + offsetX, 320, this.width, -this.y);
     },
-    clear(){
-        rect(this.x * width, this.y, this.width, CanvasHelper.height);
+    drawSelected(offsetX){
+        offsetX = offsetX || 0;
+        stroke(0);
+        fill(color(map(this.y, 0, 200, 0, 100), 50, 50));
+        rect(this.x * this.width + offsetX, 320, this.width, -this.y);
+    },
+    clear(offsetX){
+        offsetX = offsetX || 0;
+        noStroke();
+        fill(color(255,255,255));
+        rect(this.x * width, + offsetX, this.y, this.width, CanvasHelper.height);
     }
 }
