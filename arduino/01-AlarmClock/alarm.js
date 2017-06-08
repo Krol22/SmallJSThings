@@ -22,7 +22,7 @@ board.on("ready", function() {
     init();
 
     alarmTime.setSeconds(0);
-    setInterval(checkTime, 250);  
+    setInterval(checkTime, 250);
 
 });
 
@@ -65,7 +65,7 @@ function checkTime(){
 
     if(isAlarmOn)
       beep();
-    else  
+    else
       buzzer.low();
 }
 
@@ -154,7 +154,7 @@ function checkForAlarm(currentTime){
         isAlarmOn = true
     }
 
-} 
+}
 function initButtons(){
     lButton.on("down", () => {
         lButtonPressed = true;
