@@ -1,14 +1,17 @@
+const five = require('johnny-five');
+
 let Board = {
     init: function() {
         this.board = new five.Board({ port: "/dev/ttyACM0", repl: false });
-
+    },
+    initComponents: function(){
         this.lcd = new five.LCD({
             pins: [7, 8, 9, 10, 11, 12],
         });
 
-        this.hourButton = new five.Button(2);
+        this.hourButton = new five.Button(5);
         this.minuteButton = new five.Button(4);
-        this.clockButton = new five.Button(5);
+        this.clockButton = new five.Button(2);
         this.alarmButton = new five.Button(6);
 
         this.buzzer = new five.Pin({ pin : 3, mode : 3});
@@ -16,7 +19,7 @@ let Board = {
         this.initButtons();
     },
     initButtons() {
-        this.hourButton.on("down", () => { this.houtButtonPressed = true; });
+        this.hourButton.on("down", () => { this.hourButtonPressed = true; });
         this.minuteButton.on("down", () => { this.minuteButtonPressed = true; });
         this.clockButton.on("down", () => { this.clockButtonPressed = true; });
         this.alarmButton.on("down", () => { this.alarmButtonPressed = true; });
@@ -30,8 +33,8 @@ let Board = {
         this.lcd.cursor(cursorPosition.y, cursorPosition.x);
         this.lcd.print(message);
     },
-
     ready(){
+        Board.initComponents();
         setInterval(Program.loop, 250);
     }
 
@@ -39,7 +42,10 @@ let Board = {
 
 let AlarmClock = {
     init: function() {
-
+        Clock.currentTime = new Date();
+        Clock.hourOffset = 0;
+        Clock.minuteOffset = 0;
+        Alarm.alarmTime = new Date();
     },
     print: function() {
         Clock.printTime();
@@ -77,17 +83,19 @@ let Alarm = {
         h = Helper.toTwoDigits(this.alarmTime.getHours());
         m = Helper.toTwoDigits(this.alarmTime.getMinutes());
 
-        let alarmTimeText = "ALARM: " + h + ":" + " " + this.alarmState;
+        let alarmState = this.alarm ? "ON " : "OFF";
+
+        let alarmTimeText = "ALARM: " + h + ":" + m + " " + this.alarmState;
 
         Board.printOnLcd({ x: 0, y: 1 }, alarmTimeText);
     },
     setAlarmTime: function() {
         if(Board.hourButtonPressed){
-            this.alarmTime.setHours(alarmTime.getHours() + 1);
+            this.alarmTime.setHours(this.alarmTime.getHours() + 1);
             this.wasAlarmDisabled = false;
         }
         if(Board.minuteButtonPressed){
-            this.alarmTime.setMinutes(alarmTime.getMinutes() + 1);
+            this.alarmTime.setMinutes(this.alarmTime.getMinutes() + 1);
             this.wasAlarmDisabled = false;
         }
 
@@ -102,7 +110,7 @@ let Alarm = {
         }
     },
     toggleAlarm(){
-        this.isAlarmOn = !this.isAlarmOn;
+        this.alarm = !this.alarm;
     },
     offBeeping(){
         this.isAlarmOn = false;
@@ -115,13 +123,13 @@ let Clock = {
         this.currentTime = Helper.correctTime(this.currentTime);
     },
     printTime: function() {
-        let h = Helper.toTwoDigits(currentTime.getHours());
-        let m = Helper.toTwoDigits(currentTime.getHours());
-        let s = Helper.toTwoDigits(currentTime.getHours());
+        let h = Helper.toTwoDigits(this.currentTime.getHours());
+        let m = Helper.toTwoDigits(this.currentTime.getMinutes());
+        let s = Helper.toTwoDigits(this.currentTime.getSeconds());
 
         let timeText = "NOW: " + h + ":" + m + ":" + s;
 
-        Board.printOnLcd({ x: 0, y: 0 }, time);
+        Board.printOnLcd({ x: 0, y: 0 }, timeText);
     },
     setTime: function() {
         if(Board.hourButtonPressed){
@@ -141,7 +149,7 @@ let Helper = {
     },
     correctTime(time) {
         time.setHours(time.getHours() + Clock.hourOffset);
-        time.setMinutes(time.getMinutes() + Clock.minutesOffset);
+        time.setMinutes(time.getMinutes() + Clock.minuteOffset);
         return time;
     }
 };
@@ -158,4 +166,4 @@ let Program = {
 };
 
 Program.init();
-board.on('ready', Board.ready);
+Board.board.on('ready', Board.ready);
