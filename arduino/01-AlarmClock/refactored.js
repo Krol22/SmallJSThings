@@ -46,6 +46,8 @@ let AlarmClock = {
         Clock.hourOffset = 0;
         Clock.minuteOffset = 0;
         Alarm.alarmTime = new Date();
+        Alarm.alarmTime.setSeconds(0);
+        Alarm.alarm = false;
     },
     print: function() {
         Clock.printTime();
@@ -70,8 +72,7 @@ let AlarmClock = {
 let Alarm = {
     checkForAlarm: function() {
         if(this.alarmTime.getTime() < Clock.currentTime.getTime() && this.alarm && !this.wasAlarmDisabled){
-            this.isBeepOn = true;
-            this.beepOn = true;
+            this.isBeepOn = true; 
         }
         if(this.isBeepOn){
             this.launchALARM();
@@ -85,7 +86,7 @@ let Alarm = {
 
         let alarmState = this.alarm ? "ON " : "OFF";
 
-        let alarmTimeText = "ALARM: " + h + ":" + m + " " + this.alarmState;
+        let alarmTimeText = "ALARM: " + h + ":" + m + " " + alarmState;
 
         Board.printOnLcd({ x: 0, y: 1 }, alarmTimeText);
     },
@@ -113,7 +114,9 @@ let Alarm = {
         this.alarm = !this.alarm;
     },
     offBeeping(){
-        this.isAlarmOn = false;
+        if(this.isBeepOn)
+            this.wasAlarmDisabled = true;
+        this.isBeepOn = false;
     }
 };
 
@@ -134,11 +137,9 @@ let Clock = {
     setTime: function() {
         if(Board.hourButtonPressed){
             this.hourOffset++;
-            Alarm.wasAlarmDisabled = false;
         }
         if(Board.minuteButtonPressed){
             this.minuteOffset++;
-            Alarm.wasAlarmDisabled = false;
         }
     }
 };
