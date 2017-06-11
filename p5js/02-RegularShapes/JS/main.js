@@ -23,14 +23,12 @@ let Shapes = [
 let counter = 0;
 
 function setup(){
-    // setup code goes here
     let canvas = createCanvas(640, 480);
     canvas.parent('canvas');
     colorMode(HSL, 100);
 }
 
 function draw(){
-    // draw code goes here
     translate(150, 100);
     clearScreen();
     drawPolygons();
