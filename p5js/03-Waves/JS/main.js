@@ -1,4 +1,5 @@
-const numberOfPoints = 150;
+const numberOfPoints = 10;
+const minimumDistance = 500;
 const vh = 768;
 const vw = 1024;
 
@@ -25,6 +26,7 @@ function createPoint(){
 
 function draw(){
     clearCanvas();
+    drawLines();
     points.forEach(point => point.draw());
     update();
 }
@@ -34,7 +36,17 @@ function update(){
 }
 
 function drawLines(){
-    // check distance between each point and draw line if d < some value.
+    for(let i = 0; i < numberOfPoints; i++){
+        let j = 0;
+        points.forEach(point => {
+            if(points[i].x === point.x && points[i].y === point.y) return;
+
+            if(sqrt(pow((points[i].x - point.x), 2) + pow((points[i].y + point.y), 2)) < minimumDistance) {
+                stroke("white");
+                line(points[i].x, points[i].y, point.x, point.y);
+            }
+        });
+    }
 }
 
 function clearCanvas(){
@@ -43,7 +55,7 @@ function clearCanvas(){
 }
 
 let Point = {
-    init(x, y, vx, vy){
+    init(x = 0, y = 0, vx = 0, vy = 0){
         this.x = x;
         this.y = y;
         this.vx = vx;
