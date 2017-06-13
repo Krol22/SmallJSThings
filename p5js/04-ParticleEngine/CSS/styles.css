@@ -27,3 +27,11 @@ html, body {
     color: #f4e2c4;
     padding: 10px 0 0 20px;
 }
+
+.side-menu table{
+    margin: 30px 0 0 0;
+}
+
+td {
+    margin-top: 5px;
+}

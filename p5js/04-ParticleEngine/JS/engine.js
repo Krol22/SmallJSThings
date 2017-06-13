@@ -7,6 +7,9 @@ let Engine = {
         this.particleLife = 80;
         this.isGravityOn = false;
         this.particleMass = 0;
+        this.red = 122;
+        this.green = 122;
+        this.blue = 122;
     },
     draw(){
         this.particles.forEach(particle => particle.draw());
@@ -109,7 +112,9 @@ let Particle = {
         this.lifeSpan = lifeSpan;
     },
     draw(){
-        fill(color(map(this.life, 0, this.lifeSpan, 0, 255)));
+        let alpha = 100 - map(this.life, 0, this.lifeSpan, 0, 100);
+        fill(color(Engine.red, Engine.green, Engine.blue, alpha));
+
         let correctWidth = this.width - map(this.life, 0, this.lifeSpan, 0, this.width);
         if(this.particleType === "RECT"){
             rect(this.x - (this.width / 2), this.y - (this.width / 2), correctWidth, correctWidth);

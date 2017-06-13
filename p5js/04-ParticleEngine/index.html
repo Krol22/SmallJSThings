@@ -11,30 +11,69 @@
             <div class="side-menu">
                 <h3> Particle Engine 2d </h3>
                 <h4> Menu </h4>
-                <select class="select-input">
-                    <option name="rect" value="RECT">RECT</option>
-                    <option name="circle" value="CIRCLE">CIRCLE</option>
-                </select>
-                <div>
-                    <label for="width">Width</label>
-                    <input name="width" id="width-range" min="10" max="40" class="range-input" type="range"/>
-                </div>
-                <div>
-                    <label for="life">Life</label>
-                    <input name="life" id="life-range" min="40" max="120" class="range-input" type="range"/>
-                </div>
-                <div>
-                    <label for="number-of-particles">Number of particles</label>
-                    <input name="number-of-particles" id="number-of-particles-range" min="1" max="3" class="range-input" type="range"/>
-                </div>
-                <div>
-                    <label for="gravity">Gravity on</label>
-                    <input name="gravity" id="gravity-checkbox" class="checbox-input" type="checkbox"/>
-                </div>
-                <div>
-                    <label for="mass">Mass</label>
-                    <input name="mass" id="mass-range" type="range" min="-5" max="5" class="range-input" ></input>
-                </div>
+                <table>
+                    <tr>
+                        <td>Type</td>
+                        <td>
+                            <select class="select-input">
+                                <option name="rect" value="RECT">RECT</option>
+                                <option name="circle" value="CIRCLE">CIRCLE</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="width">Width</label> </td>
+                        <td> <input name="width" id="width-range" min="10" max="40" class="range-input" type="range"/> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="life">Life</label> </td>
+                        <td> <input name="life" id="life-range" min="40" max="120" class="range-input" type="range"/> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="number-of-particles">Number of particles</label> </td>
+                        <td> <input name="number-of-particles" id="number-of-particles-range" min="1" max="5" class="range-input" type="range"/> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="gravity">Gravity on</label> </td>
+                        <td> <input name="gravity" id="gravity-checkbox" class="checbox-input" type="checkbox"/> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="mass">Mass</label> </td>
+                        <td> <input name="mass" id="mass-range" type="range" min="-5" max="5" class="range-input" ></input> </td>
+                    </tr>
+                    <tr>
+                    <td> <h4> Color - particle</h4> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="mass">Red</label> </td>
+                        <td> <input name="mass" id="red-range" type="range" min="0" max="255" class="range-input" ></input> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="mass">Blue</label> </td>
+                        <td> <input name="mass" id="blue-range" type="range" min="0" max="255" class="range-input" ></input> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="mass">Green</label> </td>
+                        <td> <input name="mass" id="green-range" type="range" min="0" max="255" class="range-input" ></input> </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <h4> Color - background</h4>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="mass">Red</label> </td>
+                        <td> <input name="mass" id="redBackground-range" type="range" min="0" max="255" class="range-input" ></input> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="mass">Blue</label> </td>
+                        <td> <input name="mass" id="blueBackground-range" type="range" min="0" max="255" class="range-input" ></input> </td>
+                    </tr>
+                    <tr>
+                        <td> <label for="mass">Green</label> </td>
+                        <td> <input name="mass" id="greenBackground-range" type="range" min="0" max="255" class="range-input" ></input> </td>
+                    </tr>
+                </table>
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
