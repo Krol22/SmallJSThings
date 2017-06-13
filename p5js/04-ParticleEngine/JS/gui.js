@@ -56,6 +56,22 @@ let Gui = {
         $('#blueBackground-range').on('change', function() {
             CanvasHelper.blue = $(this).val();
         });
+
+        $('#windx-range').on('change', function() {
+            Engine.windx = $(this).val();
+        });
+
+        $('#windy-range').on('change', function() {
+            Engine.windy = $(this).val();
+        });
+
+        $('#sourceWidth-range').on('change', function() {
+            ParticleSource.width = Number($(this).val());
+        });
+
+        $('#sourceHeight-range').on('change', function() {
+            ParticleSource.height = Number($(this).val());
+        });
     },
 
     initCheckbox() {

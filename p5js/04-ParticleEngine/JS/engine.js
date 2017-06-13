@@ -10,6 +10,8 @@ let Engine = {
         this.red = 122;
         this.green = 122;
         this.blue = 122;
+        this.windx = 0;
+        this.windy = 0;
     },
     draw(){
         this.particles.forEach(particle => particle.draw());
@@ -37,8 +39,8 @@ let Engine = {
     createNewSetOfParticles(){
         for(let i = 0; i < this.numberOfParticles; i++){
             let newParticle = Object.create(Particle);
-            newParticle.init(ParticleSource.x + ParticleSource.width / 2 + (random(8) - 4),
-                ParticleSource.y + ParticleSource.width / 2 + (random(8) - 4),
+            newParticle.init(ParticleSource.x + ParticleSource.width / 2 + (random(ParticleSource.width) - ParticleSource.width / 2),
+                ParticleSource.y + ParticleSource.height / 2 + (random(ParticleSource.height) - ParticleSource.height / 2),
                 (random(10) - 5) / 2,
                 (random(10) - 5) / 2,
                 this.particleWidth);
@@ -54,9 +56,15 @@ let ParticleSource = {
         this.x = x;
         this.y = y;
         this.width = width;
+        this.height = width;
     },
     update(){
         this.drag();
+    },
+    draw(){
+        stroke(255);
+        rect(this.x, this.y, this.width, this.height);
+        noStroke();
     },
     drag(){
         if(InputManager.mousePressed &&
@@ -81,9 +89,9 @@ let ParticleSource = {
             this.x = newX;
         }
 
-        if(newY + this.width > canvasHeight){
-            this.y = canvasHeight - this.width;
-        } else if(newY < 0 + this.width){
+        if(newY + this.height > canvasHeight){
+            this.y = canvasHeight - this.height;
+        } else if(newY < 0){
             this.y = 0;
         } else {
             this.y = newY;
@@ -97,6 +105,8 @@ let Particle = {
         this.y = y;
         this.Vx = Vx;
         this.Vy = Vy;
+        this.Ax = 0.0;
+        this.Ay = 0.0;
         this.lifeSpan = 80;
         this.life = 0;
         this.width = width;
@@ -126,7 +136,12 @@ let Particle = {
         if(this.alive){
             this.x += this.Vx;
             this.y += this.Vy;
+            this.Vx += this.Ax;
+            this.Vy += this.Ay;
             this.life += 1;
+
+            this.Ax -= Engine.windx;
+            this.Ay -= Engine.windy;
 
             if(this.life > this.lifeSpan)
                 this.alive = false;
