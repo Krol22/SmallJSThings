@@ -35,12 +35,10 @@ function windowResized() {
 
 let CanvasHelper = {
     init(){
-        this.red = 0;
-        this.green = 0;
-        this.blue = 0;
+        this.grey = 0;
     },
     clear(){
-        fill(color(this.red, this.green, this.blue));
+        fill(color(this.grey, this.grey, this.grey));
         rect(0, 0, canvasWidth, canvasHeight);
     }
 };

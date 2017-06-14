@@ -43,7 +43,8 @@ let Engine = {
                 ParticleSource.y + ParticleSource.height / 2 + (random(ParticleSource.height) - ParticleSource.height / 2),
                 (random(10) - 5) / 2,
                 (random(10) - 5) / 2,
-                this.particleWidth);
+                this.particleWidth,
+                this.particleHeight);
 
             newParticle.setLifeSpan(this.particleLife);
             this.particles.push(newParticle);
@@ -100,7 +101,7 @@ let ParticleSource = {
 };
 
 let Particle = {
-    init(x, y, Vx, Vy, width = 10){
+    init(x, y, Vx, Vy, width = 10, height = 10){
         this.x = x;
         this.y = y;
         this.Vx = Vx;
@@ -110,6 +111,7 @@ let Particle = {
         this.lifeSpan = 80;
         this.life = 0;
         this.width = width;
+        this.height = height;
         this.alive = true;
         this.particleType = Engine.particleType;
 
@@ -126,8 +128,9 @@ let Particle = {
         fill(color(Engine.red, Engine.green, Engine.blue, alpha));
 
         let correctWidth = this.width - map(this.life, 0, this.lifeSpan, 0, this.width);
+        let correctHeight = this.height - map(this.life, 0, this.lifeSpan, 0, this.height);
         if(this.particleType === "RECT"){
-            rect(this.x - (this.width / 2), this.y - (this.width / 2), correctWidth, correctWidth);
+            rect(this.x - (this.width / 2), this.y - (this.width / 2), correctWidth, correctHeight);
         } else {
             ellipse(this.x , this.y, correctWidth, correctWidth);
         }
