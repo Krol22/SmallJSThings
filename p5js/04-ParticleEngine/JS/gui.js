@@ -13,14 +13,15 @@ let Gui = {
 
     initRange() {
 
-        $('#redBackground-range').val(CanvasHelper.red);
-        $('#greenBackground-range').val(CanvasHelper.green);
-        $('#blueBackground-range').val(CanvasHelper.blue);
+        $('#grey-range').val(CanvasHelper.grey);
 
         $('#width-range').on('change', function(){
             Engine.particleWidth = $(this).val();
         });
 
+        $('#height-range').on('change', function(){
+            Engine.particleHeight = $(this).val();
+        })
         $('#number-of-particles-range').on('change', function(){
             Engine.numberOfParticles = $(this).val();
         });
@@ -45,16 +46,8 @@ let Gui = {
             Engine.blue = $(this).val();
         });
 
-        $('#redBackground-range').on('change', function() {
-            CanvasHelper.red = $(this).val();
-        });
-
-        $('#greenBackground-range').on('change', function() {
-            CanvasHelper.green = $(this).val();
-        });
-
-        $('#blueBackground-range').on('change', function() {
-            CanvasHelper.blue = $(this).val();
+        $('#grey-range').on('change', function() {
+            CanvasHelper.grey = $(this).val();
         });
 
         $('#windx-range').on('change', function() {
@@ -78,7 +71,8 @@ let Gui = {
         $('#gravity-checkbox').on('change', function() {
             Engine.isGravityOn = $(this).is(':checked');
         });
+    },
+    initPredefinedEffects() {
+
     }
-
-
 };
