@@ -3,24 +3,16 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="CSS/styles.css"/>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
         <title>SmallJSProjects</title>
     </head>
     <body>
-        <div class="page">
-            <div class="canvas" id="canvas"></div>
-            <div class="side-menu">
+        <div class="row">
+            <div class="col-md-9" id="canvas"></div>
+            <div class="col-md-3">
                 <h3> Particle Engine 2d </h3>
                 <h4> Menu </h4>
                 <table>
-                    <tr>
-                        <td>Type</td>
-                        <td>
-                            <select class="select-input">
-                                <option name="rect" value="RECT">RECT</option>
-                                <option name="circle" value="CIRCLE">CIRCLE</option>
-                            </select>
-                        </td>
-                    </tr>
                     <tr>
                         <td> <label for="life">Life</label> </td>
                         <td> <input name="life" id="life-range" min="40" max="120" class="range-input" type="range"/> </td>
@@ -95,6 +87,7 @@
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="JS/p5.min.js"></script>
         <script src="JS/main.js"></script>
         <script src="JS/engine.js"></script>
