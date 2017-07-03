@@ -1,7 +1,24 @@
 let Engine = {
     init(){
+        ParticleSource.init(400, 300, 10);
+        Wall.init(400, 400, 100, 100);
+    },
+    draw(){
+        ParticleSource.draw();
+        Wall.draw();
+    },
+    update(){
+        ParticleSource.update();
+    },
+};
+
+let ParticleSource = {
+    init(x, y, width){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = width;
         this.particles = [];
-        this.particleType = "RECT";
         this.particleWidth = 20;
         this.numberOfParticles = 5;
         this.particleLife = 80;
@@ -13,14 +30,31 @@ let Engine = {
         this.windx = 0;
         this.windy = 0;
     },
-    draw(){
-        this.particles.forEach(particle => particle.draw());
-    },
     update(){
+        this.drag();
         this.particles.forEach(particle => particle.update());
         this.createNewSetOfParticles();
         this.recycle();
-        ParticleSource.update();
+    },
+    draw(){
+        this.particles.forEach(particle => particle.draw());
+        stroke(255);
+        rect(this.x, this.y, this.width, this.height);
+        noStroke();
+    },
+    createNewSetOfParticles(){
+        for(let i = 0; i < this.numberOfParticles; i++){
+            let newParticle = Object.create(Particle);
+            newParticle.init(this.x + this.width / 2 + (random(this.width) - this.width / 2),
+                this.y + this.height / 2 + (random(this.height) - this.height / 2),
+                (random(10) - 5) / 2,
+                (random(10) - 5) / 2,
+                this.particleWidth,
+                this.particleHeight);
+
+            newParticle.setLifeSpan(this.particleLife);
+            this.particles.push(newParticle);
+        }
     },
     recycle(){
         let particlesToRemove = [];
@@ -33,40 +67,6 @@ let Engine = {
             this.particles.splice(1, particlesToRemove[i]);
         }
     },
-    setNumberOfParticles(numberOfParticles){
-        this.numberOfParticles = numberOfParticles;
-    },
-    createNewSetOfParticles(){
-        for(let i = 0; i < this.numberOfParticles; i++){
-            let newParticle = Object.create(Particle);
-            newParticle.init(ParticleSource.x + ParticleSource.width / 2 + (random(ParticleSource.width) - ParticleSource.width / 2),
-                ParticleSource.y + ParticleSource.height / 2 + (random(ParticleSource.height) - ParticleSource.height / 2),
-                (random(10) - 5) / 2,
-                (random(10) - 5) / 2,
-                this.particleWidth,
-                this.particleHeight);
-
-            newParticle.setLifeSpan(this.particleLife);
-            this.particles.push(newParticle);
-        }
-    }
-};
-
-let ParticleSource = {
-    init(x, y, width){
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = width;
-    },
-    update(){
-        this.drag();
-    },
-    draw(){
-        stroke(255);
-        rect(this.x, this.y, this.width, this.height);
-        noStroke();
-    },
     drag(){
         if(InputManager.mousePressed &&
             mouseX > this.x && mouseX < this.x + this.width &&
@@ -78,7 +78,7 @@ let ParticleSource = {
             this.isDragging = false;
 
         if(this.isDragging)
-            this.setNewPosition(mouseX - this.width / 2, mouseY - this.width / 2);
+            this.setNewPosition(mouseX - this.width / 2, mouseY - this.height / 2);
     },
 
     setNewPosition(newX, newY){
@@ -113,10 +113,9 @@ let Particle = {
         this.width = width;
         this.height = height;
         this.alive = true;
-        this.particleType = Engine.particleType;
 
-        if(Engine.isGravityOn){
-            this.Vy = this.Vy - Number(Engine.particleMass);
+        if(ParticleSource.isGravityOn){
+            this.Vy = this.Vy - Number(ParticleSource.particleMass);
         }
 
     },
@@ -125,29 +124,43 @@ let Particle = {
     },
     draw(){
         let alpha = 100 - map(this.life, 0, this.lifeSpan, 0, 100);
-        fill(color(Engine.red, Engine.green, Engine.blue, alpha));
+        fill(color(ParticleSource.red, ParticleSource.green, ParticleSource.blue, alpha));
 
         let correctWidth = this.width - map(this.life, 0, this.lifeSpan, 0, this.width);
         let correctHeight = this.height - map(this.life, 0, this.lifeSpan, 0, this.height);
-        if(this.particleType === "RECT"){
-            rect(this.x - (this.width / 2), this.y - (this.width / 2), correctWidth, correctHeight);
-        } else {
-            ellipse(this.x , this.y, correctWidth, correctWidth);
-        }
+        rect(this.x - (this.width / 2), this.y - (this.width / 2), correctWidth, correctHeight);
     },
     update(){
         if(this.alive){
             this.x += this.Vx;
             this.y += this.Vy;
+            if(Wall.x < this.x + this.width && Wall.x + Wall.width > this.x && Wall.y < this.y + this.height && Wall.y + Wall.height > this.y) {
+                this.Vy = -this.Vy * (1 - (this.life / this.lifeSpan));
+            }
             this.Vx += this.Ax;
             this.Vy += this.Ay;
             this.life += 1;
 
-            this.Ax -= Engine.windx;
-            this.Ay -= Engine.windy;
+            this.Ax -= ParticleSource.windx;
+            this.Ay -= ParticleSource.windy;
 
             if(this.life > this.lifeSpan)
                 this.alive = false;
         }
     },
+};
+
+let Wall = {
+    init(x, y, width, height){
+        this.x = x;
+        this.y = x;
+        this.width = width;
+        this.height = height;
+    },
+    draw(){
+        stroke(255);
+        fill(255,255,255);
+        rect(this.x, this.y, this.width, this.height);
+        noStroke();
+    }
 };
