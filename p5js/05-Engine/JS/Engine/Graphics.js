@@ -7,8 +7,15 @@ kt.Engine.Graphics = {
     },
     draw(entity){
         let position = entity.components.Position;
-        this._context.fillStyle = '#000';
-        this._context.fillRect(position.x, position.y, position.width, position.height);
+        this._context.save();
+
+        this._context.fillStyle = '#5ee527';
+        this._context.shadowColor = '#5ee527';
+        this._context.shadowBlur = 5;
+        this._context.translate(position.x + position.width / 2, position.y + position.height / 2);
+        this._context.rotate(position.angle * Math.PI/180);
+        this._context.fillRect(0 - position.width / 2, 0 - position.height / 2, position.width, position.height);
+        this._context.restore();
     },
     drawBackground(colorHex){
         this._context.fillStyle = colorHex;
@@ -18,12 +25,11 @@ kt.Engine.Graphics = {
         let position = entity.components.Position;
         let lineProperties = entity.components.Line;
 
-
         this._context.lineWidth = lineProperties.weight;
         this._context.beginPath();
         this._context.moveTo(position.x, position.y);
         this._context.lineTo(position.width, position.height);
-        this._context.strokeStyle = hsl(lineProperties.length);
+        this._context.strokeStyle = lineProperties.color.value;
         this._context.stroke();
         this._context.lineWidth = 1;
     },
@@ -33,6 +39,7 @@ kt.Engine.Graphics = {
 };
 
 function hsl(value){
+    value = kt.Engine.Math.map(value, 0, 150, 0, 255);
     return `hsl(${value}, 100%, 50%)`;
 }
 
@@ -47,7 +54,7 @@ kt.Engine.Graphics.UI = {
         if(font)
             kt.Engine.Graphics._context.font = font;
 
-        kt.Engine.Graphics._context.fillStyle = '#000';
+        kt.Engine.Graphics._context.fillStyle = '#fff';
         kt.Engine.Graphics._context.fillText(text, position.x, position.y);
     },
     drawButton(entity){

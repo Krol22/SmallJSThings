@@ -1,11 +1,19 @@
 var Scene = kt.Engine.Scenes.createScene('GAME');
 
+let Colors = {
+    red: { max: 40, value: '#ff0000', points: 5 },
+    orange: { min: 40, max: 70, value: '#ff7f50', points: 4 },
+    yellow: { min: 70, max: 110, value: '#ffff00', points: 3 },
+    green: { min: 110, max: 140, value: '#00ff00', points: 2 },
+    cyan: { min: 140, value: '#00ffff', points: 1 }
+};
+
 var ApperanceComponent = function(){
     return { name: 'Apperance', };
 };
 
 var PositionComponent = function(x = 0, y = 0, width = 10, height = 10){
-    return { name: 'Position', x, y, width, height};
+    return { name: 'Position', x, y, width, height, angle: 0 };
 };
 
 var PhysicComponent = function(vx = 0, vy = 0, ax = 0, ay = 0){
@@ -35,12 +43,12 @@ var EnemyCompoenent = function(){
 };
 
 var LineComponent = function(weight){
-    return { name: 'Line', lenght: 0, weight: 2};
+    return { name: 'Line', length: 0, weight: 2, color: '#fff'};
 };
 
 var playerEntity = new kt.Engine.Entity()
                         .addComponent(new ApperanceComponent())
-                        .addComponent(new PositionComponent(200, 200))
+                        .addComponent(new PositionComponent(200, 200, 13, 13))
                         .addComponent(new PhysicComponent())
                         .addComponent(new PlayerControledComponent());
 
@@ -78,7 +86,7 @@ var renderSystem = {
     },
     tick: function(entities){
         kt.Engine.Graphics.clear();
-        kt.Engine.Graphics.drawBackground("#909090");
+        kt.Engine.Graphics.drawBackground("#111");
 
         entities.filter( entity => entity.components.Line )
         .forEach( entity => {
@@ -138,6 +146,10 @@ var physicsSystem = {
             physic.vx += physic.ax;
             physic.vy += physic.ay;
         });
+
+        let playerEntity = entities.filter( entity => entity.components.PlayerControled )[0];
+
+        playerEntity.components.Position.angle += 10;
     }
 };
 
@@ -189,9 +201,23 @@ var enemySystem = {
                 Math.pow((linePosition.x - linePosition.width), 2) +
                 Math.pow((linePosition.y - linePosition.height), 2)
             );
+
+            lines[i].components.Line.color = selectColor(lines[i].components.Line.length);
         }
     }
 };
+
+function selectColor(length){
+    let selectedColor;
+    Object.keys(Colors).forEach( key => {
+        Colors[key].min = Colors[key].min || 1;
+        Colors[key].max = Colors[key].max || 1000;
+        if(length > Colors[key].min && length < Colors[key].max){
+            selectedColor = Colors[key];
+        }
+    });
+    return selectedColor;
+}
 
 const collisionSystem = {
     init(){},
@@ -244,9 +270,8 @@ const collisionSystem = {
                 if(kt.Engine.Physics.segmentsCollistion( playerPosition.x + playerPosition.width, playerPosition.y, playerPosition.x + playerPosition.width, playerPosition.y + playerPosition.height,
                     linePosition.x, linePosition.y, linePosition.x + linePosition.width, linePosition.y + linePosition.height )){
 
-
                     // now it's just a shot with max length of line
-                    scoreEntity.components.Value.value += Math.round(kt.Engine.Math.map(line.components.Line.length, 0, 150, 10, 0));
+                    scoreEntity.components.Value.value += line.components.Line.color.points;
                     playerEntity.components.Physic.collided = true;
                 }
             });

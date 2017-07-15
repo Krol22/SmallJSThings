@@ -22,6 +22,13 @@ clear() // clear function
 // Change scene method
 // Add Position Components
 
-// now it's refactor time! 
+// now it's refactor time!
+// add next line
+
+Red if < 30
+Orange 30 - 70
+Yellow 70 - 110
+Green 110 - 140
+Cyan > 140
 
 
