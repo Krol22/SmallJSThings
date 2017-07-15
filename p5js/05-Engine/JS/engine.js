@@ -1,30 +1,23 @@
 const kt = {};
 
 kt.Engine = {
-
-
     start(){
         this.running = true;
+        kt.Engine.Systems.forEach(system => {
+            if(system.init)
+                system.init();
+        });
         this.gameLoop();
     },
 
     gameLoop(){
-        while (this.running){
-            kt.Engine.World.update();
-            this.running = false;
-        }
+        let hardBinded = this.gameLoop.bind(this);
+        window.requestAnimationFrame(hardBinded);
+        kt.Engine.Systems.forEach(system => {
+            system.tick(kt.Engine.Scenes[kt.Engine.Scene._currentScene].Entities);
+        });
     }
 };
 
 kt.Engine.Components = [];
-kt.Engine.Entities = [];
 kt.Engine.Systems = [];
-
-kt.Engine.World = {
-    // update all systems of engine;
-    update(){
-        kt.Engine.Systems.forEach((system) => {
-            system(kt.Engine.Entities);
-        });
-    }
-};

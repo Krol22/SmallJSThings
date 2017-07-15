@@ -1,7 +1,6 @@
 kt.Engine.Entity = function() {
     this.id = (Math.random() * 10000000).toString(16);
     this.components = {};
-    kt.Engine.Entities.push(this);
     return this;
 };
 
