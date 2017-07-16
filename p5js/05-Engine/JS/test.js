@@ -1,4 +1,4 @@
-var Scene = kt.Engine.Scenes.createScene('GAME');
+let Scene = kt.Engine.Scenes.createScene('GAME');
 
 let Colors = {
     red: { max: 40, value: '#ff0000', points: 5 },
@@ -9,28 +9,55 @@ let Colors = {
 };
 
 var ApperanceComponent = function(){
-    return { name: 'Apperance', };
+    return { name: 'Apperance' };
 };
 
 var PositionComponent = function(x = 0, y = 0, width = 10, height = 10){
-    return { name: 'Position', x, y, width, height, angle: 0 };
+    return {
+        name: 'Position',
+        x,
+        y
+    };
 };
 
+var BlockComponent = function(width = 10, height = 10) {
+    return {
+        name: 'Block',
+        width,
+        height,
+        color: '#fff',
+        angle: 0
+    };
+};
+
+//################## REFACTORING TIME ####################
+// #TODO swap position to vector? (it's hard :/, and i don't see any good sides of this)
+// #TODO move systems to separate files? - DO IT!
+// #TODO add next line
+
 var PhysicComponent = function(vx = 0, vy = 0, ax = 0, ay = 0){
-    return { name: 'Physic', vx, vy, ax, ay, collided: false };
+    return {
+        name: 'Physic',
+        vx,
+        vy,
+        ax,
+        ay
+    };
 };
 
 var PlayerControledComponent = function(){
     return {
         name: 'PlayerControled',
         live: true,
+        collided: false
     };
 };
 
 var TextComponent = function(text, font){
     return {
         name: 'Text',
-        text, font
+        text,
+        font
     };
 };
 
@@ -38,38 +65,37 @@ var ValueComponent = function(value) {
     return { name: 'Value', value };
 };
 
-var EnemyCompoenent = function(){
-    return { name: 'Enemy' };
-};
-
-var LineComponent = function(weight){
-    return { name: 'Line', length: 0, weight: 2, color: '#fff'};
+var LineComponent = function(x1 = 0, y1 = 0, weight = 2){
+    return {
+        name: 'Line',
+        x1,
+        y1,
+        length: 0,
+        weight: 2,
+        color: '#fff'
+    };
 };
 
 var playerEntity = new kt.Engine.Entity()
                         .addComponent(new ApperanceComponent())
-                        .addComponent(new PositionComponent(200, 200, 13, 13))
+                        .addComponent(new PositionComponent(200, 200))
+                        .addComponent(new BlockComponent(13, 13))
                         .addComponent(new PhysicComponent())
                         .addComponent(new PlayerControledComponent());
-
-var graphicEntity2 = new kt.Engine.Entity()
-                        .addComponent(new ApperanceComponent())
-                        .addComponent(new PositionComponent(150, 150));
 
 var enemies = [];
 for(let i = 0; i < 5; i++){
     enemies.push(new kt.Engine.Entity()
-                        .addComponent(new PositionComponent(0, 0, 15, 15))
+                        .addComponent(new PositionComponent(0, 0))
                         .addComponent(new PhysicComponent(- 6, 0, 0, 0))
-                        .addComponent(new EnemyCompoenent())
+                        .addComponent(new BlockComponent(15, 15))
                         .addComponent(new ApperanceComponent()));
 }
 
 let lines = [];
 for(let i = 0; i < 4; i++){
     lines.push(new kt.Engine.Entity().addComponent(new PositionComponent())
-                                     .addComponent(new LineComponent())
-                                     .addComponent(new EnemyCompoenent()));
+                                     .addComponent(new LineComponent(0, 0)));
 }
 
 var scoreEntity = new kt.Engine.Entity()
@@ -160,7 +186,7 @@ var enemySystem = {
         let unvisibleBlocks = 0;
 
         let player = entities.filter( entity => entity.components.PlayerControled)[0];
-        let blocks = entities.filter( entity => entity.components.Enemy && !entity.components.Line );
+        let blocks = entities.filter( entity => entity.components.Block && !entity.components.PlayerControled );
 
         blocks.sort((a, b) => { return a.components.Position.y - b.components.Position.y; });
 
@@ -186,20 +212,21 @@ var enemySystem = {
                 prevYPosition = position.y;
             });
 
-            player.components.Physic.collided = false;
+            player.components.PlayerControled.collided = false;
         }
 
         let lines = entities.filter( entity => entity.components.Line );
 
         for(let i = 0; i < 4; i++){
             let linePosition = lines[i].components.Position;
-            linePosition.x = blocks[i].components.Position.x + (blocks[i].components.Position.width / 2) ;
-            linePosition.y = blocks[i].components.Position.y + (blocks[i].components.Position.height / 2);
-            linePosition.width = blocks[i + 1].components.Position.x + (blocks[i + 1].components.Position.width / 2);
-            linePosition.height = blocks[i + 1].components.Position.y + (blocks[i + 1].components.Position.height / 2);
+            let lineProperties = lines[i].components.Line;
+            linePosition.x = blocks[i].components.Position.x + (blocks[i].components.Block.width / 2) ;
+            linePosition.y = blocks[i].components.Position.y + (blocks[i].components.Block.height / 2);
+            lineProperties.x1 = blocks[i + 1].components.Position.x + (blocks[i + 1].components.Block.width / 2);
+            lineProperties.y1 = blocks[i + 1].components.Position.y + (blocks[i + 1].components.Block.height / 2);
             lines[i].components.Line.length = Math.sqrt(
-                Math.pow((linePosition.x - linePosition.width), 2) +
-                Math.pow((linePosition.y - linePosition.height), 2)
+                Math.pow((linePosition.x - lineProperties.x1), 2) +
+                Math.pow((linePosition.y - lineProperties.y1), 2)
             );
 
             lines[i].components.Line.color = selectColor(lines[i].components.Line.length);
@@ -232,8 +259,9 @@ const collisionSystem = {
         })[0];
 
         let playerPosition = playerEntity.components.Position;
+        let playerBlock = playerEntity.components.Block;
 
-        if(playerPosition.y < 0 || playerPosition.y > 320 - playerPosition.width){
+        if(playerPosition.y < 0 || playerPosition.y > 320 - playerBlock.width){
             // player collision with world.
             playerPosition.y = 195;
             playerEntity.components.Physic.vy = 0;
@@ -243,14 +271,16 @@ const collisionSystem = {
             scoreEntity.components.Value.counting = false;
         }
 
+        // Check player collision with Other blocks;
+
         entities
-        .filter( entity => entity.components.Enemy && !entity.components.Line )
+        .filter( entity => entity.components.Block && !entity.components.PlayerControled )
         .forEach ( enemyEntity => {
             let enemyPosition = enemyEntity.components.Position;
+            let enemyBlock = enemyEntity.components.Block;
 
-            if(kt.Engine.Physics.rectCollision(playerPosition.x, playerPosition.y, playerPosition.width, playerPosition.height,
-               enemyPosition.x, enemyPosition.y, enemyPosition.width, enemyPosition.height)){
-
+            if(kt.Engine.Physics.rectCollision(playerPosition.x, playerPosition.y, playerBlock.width, playerBlock.height,
+               enemyPosition.x, enemyPosition.y, enemyBlock.width, enemyBlock.height)){
                     playerPosition.y = 195;
                     playerEntity.components.Physic.vy = 0;
                     playerEntity.components.Physic.ay = 0;
@@ -259,20 +289,23 @@ const collisionSystem = {
                 }
         });
 
-        if(!playerEntity.components.Physic.collided){
+        // Check player collisiion with Lines and add points;
+
+        if(!playerEntity.components.PlayerControled.collided){
             scoreEntity = entities.filter(entity => entity.components.Value)[0];
 
             entities
             .filter( entity => entity.components.Line )
             .forEach( line => {
                 let linePosition = line.components.Position;
-
-                if(kt.Engine.Physics.segmentsCollistion( playerPosition.x + playerPosition.width, playerPosition.y, playerPosition.x + playerPosition.width, playerPosition.y + playerPosition.height,
-                    linePosition.x, linePosition.y, linePosition.x + linePosition.width, linePosition.y + linePosition.height )){
+                let lineProperties = line.components.Line;
+                // #TODO check right side of player block with line still need to add rest of lines.
+                if(kt.Engine.Physics.segmentsCollistion( playerPosition.x + playerBlock.width, playerPosition.y, playerPosition.x + playerBlock.width, playerPosition.y + playerBlock.height,
+                    linePosition.x, linePosition.y, linePosition.x + lineProperties.x1, linePosition.y + lineProperties.y1 )){
 
                     // now it's just a shot with max length of line
                     scoreEntity.components.Value.value += line.components.Line.color.points;
-                    playerEntity.components.Physic.collided = true;
+                    playerEntity.components.PlayerControled.collided = true;
                 }
             });
         }

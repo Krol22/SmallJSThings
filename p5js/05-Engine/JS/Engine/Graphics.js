@@ -7,14 +7,15 @@ kt.Engine.Graphics = {
     },
     draw(entity){
         let position = entity.components.Position;
+        let block = entity.components.Block;
         this._context.save();
 
         this._context.fillStyle = '#5ee527';
         this._context.shadowColor = '#5ee527';
-        this._context.shadowBlur = 5;
-        this._context.translate(position.x + position.width / 2, position.y + position.height / 2);
+        this._context.shadowBlur = 9;
+        this._context.translate(position.x + block.width / 2, position.y + block.height / 2);
         this._context.rotate(position.angle * Math.PI/180);
-        this._context.fillRect(0 - position.width / 2, 0 - position.height / 2, position.width, position.height);
+        this._context.fillRect(0 - block.width / 2, 0 - block.height / 2, block.width, block.height);
         this._context.restore();
     },
     drawBackground(colorHex){
@@ -28,7 +29,7 @@ kt.Engine.Graphics = {
         this._context.lineWidth = lineProperties.weight;
         this._context.beginPath();
         this._context.moveTo(position.x, position.y);
-        this._context.lineTo(position.width, position.height);
+        this._context.lineTo(lineProperties.x1, lineProperties.y1);
         this._context.strokeStyle = lineProperties.color.value;
         this._context.stroke();
         this._context.lineWidth = 1;
@@ -37,11 +38,6 @@ kt.Engine.Graphics = {
         this._context.clearRect(0, 0, this._width, this._height);
     },
 };
-
-function hsl(value){
-    value = kt.Engine.Math.map(value, 0, 150, 0, 255);
-    return `hsl(${value}, 100%, 50%)`;
-}
 
 kt.Engine.Graphics.UI = {
     init(){
