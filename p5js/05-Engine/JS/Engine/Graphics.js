@@ -14,7 +14,7 @@ kt.Engine.Graphics = {
         this._context.shadowColor = '#5ee527';
         this._context.shadowBlur = 9;
         this._context.translate(position.x + block.width / 2, position.y + block.height / 2);
-        this._context.rotate(position.angle * Math.PI/180);
+        this._context.rotate(block.angle * Math.PI/180);
         this._context.fillRect(0 - block.width / 2, 0 - block.height / 2, block.width, block.height);
         this._context.restore();
     },
