@@ -5,7 +5,7 @@ const renderSystem = {
         kt.Engine.Graphics.clear();
         kt.Engine.Graphics.drawBackground("#111");
 
-        entities.filter( entity => entity.components.Line )
+        entities.filter( entity => entity.components.Line && entity.components.Line.visible )
         .forEach( entity => {
             kt.Engine.Graphics.drawLine(entity);
         });
@@ -15,6 +15,12 @@ const renderSystem = {
         }).forEach( entity => {
             kt.Engine.Graphics.draw(entity);
         });
+
+        entities
+        .filter( entity => entity.components.Particle )
+        .forEach(particle => {
+            kt.Engine.Graphics.draw(particle);
+        })
 
     }
 };

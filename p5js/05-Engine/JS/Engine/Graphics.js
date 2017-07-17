@@ -10,8 +10,8 @@ kt.Engine.Graphics = {
         let block = entity.components.Block;
         this._context.save();
 
-        this._context.fillStyle = '#5ee527';
-        this._context.shadowColor = '#5ee527';
+        this._context.fillStyle = block.color;
+        this._context.shadowColor = block.color;
         this._context.shadowBlur = 9;
         this._context.translate(position.x + block.width / 2, position.y + block.height / 2);
         this._context.rotate(block.angle * Math.PI/180);

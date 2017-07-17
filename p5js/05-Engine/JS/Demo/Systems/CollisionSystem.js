@@ -13,8 +13,9 @@ const collisionSystem = {
         let playerPosition = playerEntity.components.Position;
         let playerBlock = playerEntity.components.Block;
 
+        // Check player collision with world;
+
         if(playerPosition.y < 0 || playerPosition.y > 320 - playerBlock.width){
-            // player collision with world.
             playerPosition.y = 195;
             playerEntity.components.Physic.vy = 0;
             playerEntity.components.Physic.ay = 0;
@@ -26,7 +27,7 @@ const collisionSystem = {
         // Check player collision with Other blocks;
 
         entities
-        .filter( entity => entity.components.Block && !entity.components.PlayerControled )
+        .filter( entity => entity.components.Block && !entity.components.PlayerControled && !entity.components.Particle )
         .forEach ( enemyEntity => {
             let enemyPosition = enemyEntity.components.Position;
             let enemyBlock = enemyEntity.components.Block;
@@ -57,7 +58,11 @@ const collisionSystem = {
 
                     // now it's just a shot with max length of line
                     scoreEntity.components.Value.value += line.components.Line.color.points;
+                    // removed for later part
+                    //    lineProperties.visible = false;
+                    //    lineProperties.destroyed = true;
                     playerEntity.components.PlayerControled.collided = true;
+                    playerEntity.components.Block.color = line.components.Line.color.value;
                 }
             });
         }

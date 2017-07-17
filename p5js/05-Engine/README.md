@@ -15,20 +15,11 @@ graphics.init(canvasSelector, width, height) // init canvas
 draw(entity with Position Component)
 clear() // clear function
 
-// create scene, add entities, switch kt.Engine.currentScene to switch between scenes
-// #TODO systems per scene?
-// Add basic components!
-// Some init for each system
-// Change scene method
-// Add Position Components
 
-// now it's refactor time!
-// add next line
-
-Red if < 30
-Orange 30 - 70
-Yellow 70 - 110
-Green 110 - 140
-Cyan > 140
-
-
+### TODO
+* splash screen,
+* game over screen,
+* player destroyed effect,
+* some basic UI,
+* launch on cordova,
+* fix bugs: player collision with line (only 1 segment of playerBlock is checked);

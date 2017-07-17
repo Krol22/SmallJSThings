@@ -36,7 +36,18 @@ const blockSystem = {
             waveBlock[block.components.Block.wave].push(block);
         });
 
-        waveBlock.forEach( wave => {
+        let lines = entities.filter( entity => entity.components.Line );
+        let waveLines = [];
+
+        lines.forEach( line => {
+            if(!waveLines[line.components.Line.wave]){
+                waveLines[line.components.Line.wave] = [];
+            }
+            waveLines[line.components.Line.wave].push(line);
+        });
+
+        waveBlock.forEach( (wave, index) => {
+
 
             if(wave.every( block => block.components.Block.visible === false )){
                 wave[0].components.Position.y = Math.random() * 15;
@@ -44,6 +55,10 @@ const blockSystem = {
 
                 wave[1].components.Position.y = 50 + Math.random() * 80;
                 wave[2].components.Position.y = 180 + Math.random() * 70;
+
+                waveLines[index].forEach( waveline => {
+                    waveline.components.Line.visible = true;
+                })
 
                 wave.forEach( block => {
                     let position = block.components.Position;
@@ -57,15 +72,6 @@ const blockSystem = {
 
         });
 
-        let lines = entities.filter( entity => entity.components.Line );
-        let waveLines = [];
-
-        lines.forEach( line => {
-            if(!waveLines[line.components.Line.wave]){
-                waveLines[line.components.Line.wave] = [];
-            }
-            waveLines[line.components.Line.wave].push(line);
-        });
 
         for(let waveIndex = 0; waveIndex < NUMBER_OF_WAVES; waveIndex++){
             for(let lineIndex = 0; lineIndex < BLOCKS_PER_WAVE - 1; lineIndex++){
@@ -89,6 +95,11 @@ const blockSystem = {
                 );
 
                 lineProperties.color = selectColor(lineProperties.length);
+                firstBlock.components.Block.color = lineProperties.color.value;
+
+                if(lineIndex === BLOCKS_PER_WAVE - 2){
+                    secondBlock.components.Block.color = lineProperties.color.value;
+                }
             }
         }
 
