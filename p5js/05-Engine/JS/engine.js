@@ -13,9 +13,7 @@ kt.Engine = {
     gameLoop(){
         let hardBinded = this.gameLoop.bind(this);
         window.requestAnimationFrame(hardBinded);
-        kt.Engine.Systems.forEach(system => {
-            system.tick(kt.Engine.Scenes[kt.Engine.Scene._currentScene].Entities);
-        });
+        kt.Engine.SceneManager.tick();
     }
 };
 

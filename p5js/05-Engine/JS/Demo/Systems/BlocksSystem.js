@@ -9,7 +9,7 @@ const Colors = {
     cyan: { min: 140, value: '#00ffff', points: 1 }
 };
 
-const blockSystem = {
+const blocksSystem = {
     init: function(){},
     tick: function(entities) {
 
