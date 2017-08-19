@@ -6,6 +6,25 @@ let Scene = new kt.Engine.Scene({
     update: update
 });
 
+let gameInputSystem = {
+    tick: function(entities){
+        let scoreEntity = entities.filter( entity => entity.components.Value)[0];
+        if(this.keys[32] && !scoreEntity.components.Value.counting){
+            scoreEntity.components.Value.counting = true;
+        }
+
+        entities.filter( entity => {
+            return entity.components.Position && entity.components.PlayerControled && entity.components.Physic;
+        }).forEach( entity => {
+            if(this.keys[32]){
+                let entityPosition = entity.components.Physic;
+                entityPosition.ay = 0.2;
+                entityPosition.vy = -4.5;
+            }
+        });
+    }
+};
+
 function init(){
     var playerEntity = new kt.Engine.Entity()
                             .addComponent(new ApperanceComponent())
@@ -48,12 +67,14 @@ function init(){
                                              .addComponent(new PhysicComponent(-6, 0))
                                              .addComponent(new ParticleComponent()));
     }
+    
+    gameInputSystem = Object.assign(gameInputSystem, kt.Engine.Systems.InputSystem);
 
     GameECS.addEntities([playerEntity, scoreEntity]);
     GameECS.addEntities(enemies);
     GameECS.addEntities(lines);
     GameECS.addEntities(particles);
-    GameECS.addSystems([blocksSystem, collisionSystem, particleSystem, physicsSystem, renderSystem, userInputSystem, UISystem]);
+    GameECS.addSystems([blocksSystem, collisionSystem, particleSystem, physicsSystem, renderSystem, gameInputSystem, UISystem]);
 
 }
 

@@ -1,16 +1,26 @@
-/*const MenuScene = new kt.Engine.Scene();
+const MenuScene = new kt.Engine.Scene({
+    name: 'MenuScene',
+    init: init,
+    update: update
+});
 
-MenuScene.init = function() {
+let menuInputSystem;
 
-    let titleText = new kt.Engine.Entity()
-                    .addComponent(new PositionComponent(250, 150))
-                    .addComponent(new TextComponent('Welcome!', '50px Arial'));
+function init() {
 
-    let pressStartText = new kt.Engine.Entity()
-                         .addComponent(new PositionComponent(250, 150))
-                         .addComponent(new TextComponent('press SPACE to start.'));
+    menuInputSystem = {
+        tick: function(){
+            if(this.keys[32]){
+                kt.Engine.SceneManager.pushScene('GameScene');
+            }
+        }
+    }
 
+    menuInputSystem = Object.assign(menuInputSystem, kt.Engine.Systems.InputSystem);
+    menuInputSystem.init();
+};
 
-    this.addEntities([titleText, pressStartText]);
-    this.addSystems([UISystem]);
-}*/
+function update() {
+    menuInputSystem.tick();
+}
+
