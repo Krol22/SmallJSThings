@@ -7,19 +7,19 @@ const renderSystem = {
 
         entities.filter( entity => entity.components.Line && entity.components.Line.visible )
         .forEach( entity => {
-            kt.Engine.Graphics.drawLine(entity);
+            kt.Engine.EntityComponentSystem.Graphics.drawLine(entity);
         });
 
         entities.filter( entity => {
             return entity.components.Apperance && entity.components.Position;
         }).forEach( entity => {
-            kt.Engine.Graphics.draw(entity);
+            kt.Engine.EntityComponentSystem.Graphics.draw(entity);
         });
 
         entities
         .filter( entity => entity.components.Particle )
         .forEach(particle => {
-            kt.Engine.Graphics.draw(particle);
+            kt.Engine.EntityComponentSystem.Graphics.draw(particle);
         })
 
     }

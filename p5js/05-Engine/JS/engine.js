@@ -3,10 +3,6 @@ const kt = {};
 kt.Engine = {
     start(){
         this.running = true;
-        kt.Engine.Systems.forEach(system => {
-            if(system.init)
-                system.init();
-        });
         this.gameLoop();
     },
 

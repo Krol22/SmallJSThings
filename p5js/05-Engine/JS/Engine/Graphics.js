@@ -5,41 +5,51 @@ kt.Engine.Graphics = {
         this._width = width;
         this._height = height;
     },
-    draw(entity){
-        let position = entity.components.Position;
-        let block = entity.components.Block;
-        this._context.save();
-
-        this._context.fillStyle = block.color;
-        this._context.shadowColor = block.color;
-        this._context.shadowBlur = 9;
-        this._context.translate(position.x + block.width / 2, position.y + block.height / 2);
-        this._context.rotate(block.angle * Math.PI/180);
-        this._context.fillRect(0 - block.width / 2, 0 - block.height / 2, block.width, block.height);
-        this._context.restore();
+    clear(){
+        this._context.clearRect(0, 0, this._width, this._height);
     },
     drawBackground(colorHex){
         this._context.fillStyle = colorHex;
         this._context.fillRect(0, 0, this._width, this._height);
     },
+    drawText(text, positionX = 0, positionY = 0, font = "20px Arial", color = '#fff') {
+        this._context.font = font;
+        this._context.fillStyle = color;
+        this._context.fillText(text, positionX, positionY);
+    }
+};
+
+kt.Engine.EntityComponentSystem.Graphics = {
+    draw(entity){
+        let position = entity.components.Position;
+        let block = entity.components.Block;
+        let _context = kt.Engine.Graphics._context;
+        _context.save();
+
+        _context.fillStyle = block.color;
+        _context.shadowColor = block.color;
+        _context.shadowBlur = 9;
+        _context.translate(position.x + block.width / 2, position.y + block.height / 2);
+        _context.rotate(block.angle * Math.PI/180);
+        _context.fillRect(0 - block.width / 2, 0 - block.height / 2, block.width, block.height);
+        _context.restore();
+    },
     drawLine(entity){
         let position = entity.components.Position;
         let lineProperties = entity.components.Line;
+        let _context = kt.Engine.Graphics._context;
 
-        this._context.lineWidth = lineProperties.weight;
-        this._context.beginPath();
-        this._context.moveTo(position.x, position.y);
-        this._context.lineTo(lineProperties.x1, lineProperties.y1);
-        this._context.strokeStyle = lineProperties.color.value;
-        this._context.stroke();
-        this._context.lineWidth = 1;
-    },
-    clear(){
-        this._context.clearRect(0, 0, this._width, this._height);
+        _context.lineWidth = lineProperties.weight;
+        _context.beginPath();
+        _context.moveTo(position.x, position.y);
+        _context.lineTo(lineProperties.x1, lineProperties.y1);
+        _context.strokeStyle = lineProperties.color.value;
+        _context.stroke();
+        _context.lineWidth = 1;
     },
 };
 
-kt.Engine.Graphics.UI = {
+kt.Engine.EntityComponentSystem.Graphics.UI = {
     init(){
         kt.Engine.Graphics._context.font = '20px Arial';
     },

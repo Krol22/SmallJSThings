@@ -5,7 +5,7 @@ const UISystem = {
         .filter(entity => entity.components.Position && entity.components.Text && entity.components.Value)
         .forEach(entity => {
             entity.components.Text.text = 'Score: ' + entity.components.Value.value;
-            kt.Engine.Graphics.UI.drawText(entity);
+            kt.Engine.EntityComponentSystem.Graphics.UI.drawText(entity);
         });
     }
 };

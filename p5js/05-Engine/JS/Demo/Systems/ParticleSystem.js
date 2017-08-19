@@ -21,16 +21,6 @@ const particleSystem = {
             aliveParticle.components.Particle.liveTime++;
         });
 
-        /*let destroyedLines = entities.filter( entity => entity.components.Line && entity.components.Line.destroyed);
-
-        destroyedLines.forEach(line => {
-            for(let i = 0; i < 20; i++){
-                createLineExplode(particlePool, line);
-            }
-            line.components.Line.destroyed = false;
-        });
-        */
-
     }
 };
 

@@ -19,7 +19,8 @@ kt.Engine.EntityComponentSystem.prototype.addEntities = function(entities){
 
 kt.Engine.EntityComponentSystem.prototype.addSystems = function(systems){
     systems.forEach(system => {
-        system.init();
+        if(system.init)
+            system.init();
     });
     this.Systems = this.Systems.concat(systems);
 };
