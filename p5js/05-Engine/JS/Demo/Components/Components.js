@@ -38,6 +38,7 @@ var PlayerControledComponent = function(){
         live: true,
         collided: false,
         shield: true,
+        explode: false,
     };
 };
 

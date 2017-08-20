@@ -11,10 +11,14 @@ const renderSystem = {
         });
 
         entities.filter( entity => {
-            return entity.components.Apperance && entity.components.Position;
+            return entity.components.Apperance && entity.components.Position && !entity.components.PlayerControled;
         }).forEach( entity => {
             kt.Engine.EntityComponentSystem.Graphics.draw(entity);
         });
+
+        let playerEntity = entities.filter( entity => entity.components.PlayerControled )[0];
+        if(playerEntity.components.PlayerControled.live)
+            kt.Engine.EntityComponentSystem.Graphics.draw(playerEntity);
 
         entities
         .filter( entity => entity.components.Particle )

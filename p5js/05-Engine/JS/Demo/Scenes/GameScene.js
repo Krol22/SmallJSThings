@@ -3,24 +3,44 @@ let GameECS = new kt.Engine.EntityComponentSystem();
 let Scene = new kt.Engine.Scene({
     name: 'GameScene',
     init: init,
-    update: update
+    update: update,
+    destroy: destroy
 });
 
 let gameInputSystem = {
     tick: function(entities){
         let scoreEntity = entities.filter( entity => entity.components.Value)[0];
-        if(kt.Engine.InputManager.keys.Space && !scoreEntity.components.Value.counting){
+        let playerEntity = entities.filter( entity => entity.components.PlayerControled)[0];
+
+        if(kt.Engine.InputManager.keys[32].isDown && !scoreEntity.components.Value.counting){
             scoreEntity.components.Value.counting = true;
+            playerEntity.components.PlayerControled.live = true;
         }
 
-        entities.filter( entity => {
-            return entity.components.Position && entity.components.PlayerControled && entity.components.Physic;
-        }).forEach( entity => {
-            if(kt.Engine.InputManager.keys.Space){
+        entities.filter( entity => { return entity.components.PlayerControled; }).forEach( entity => {
+            if(kt.Engine.InputManager.keys[32].isDown){
                 let entityPosition = entity.components.Physic;
                 entityPosition.ay = 0.2;
                 entityPosition.vy = -4.5;
             }
+
+            // #TODO: create some game constants
+            let blockComponent = entity.components.Block;
+
+            if(kt.Engine.InputManager.keys[40].isDown){
+                blockComponent.color = '#ff7f50';
+
+            } else if (kt.Engine.InputManager.keys[38].isDown) {
+                blockComponent.color = '#ffff00';
+
+            } else if (kt.Engine.InputManager.keys[39].isDown) {
+                blockComponent.color = '#00ff00';
+
+            } else if (kt.Engine.InputManager.keys[37].isDown) {
+                blockComponent.color = '#00ffff';
+
+            }
+
         });
     }
 };
@@ -82,3 +102,6 @@ function update() {
     GameECS.update();
 }
 
+function destroy() {
+    GameECS.destroy();
+}

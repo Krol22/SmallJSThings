@@ -11,6 +11,7 @@ kt.Engine.SceneManager = {
     _scenes: {},
     scenesStack: [],
     pushScene(sceneName){
+        console.log(this);
         let scene = this._scenes[sceneName];
         if(scene.init) {
             scene.init();
@@ -18,6 +19,7 @@ kt.Engine.SceneManager = {
         this.scenesStack.push(scene);
     },
     popScene(){
+        this.scenesStack[this.scenesStack.length - 1].destroy();
         this.scenesStack.pop();
     },
     changeScene(sceneName){

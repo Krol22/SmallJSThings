@@ -2,9 +2,13 @@ const collisionSystem = {
     init(){},
     tick(entities) {
 
+
         let playerEntity = entities.filter( entity => {
             return entity.components.PlayerControled;
         })[0];
+
+        if(!playerEntity.components.PlayerControled.live)
+            return;
 
         let scoreEntity = entities.filter( entity => {
             return entity.components.Text;
@@ -16,12 +20,9 @@ const collisionSystem = {
         // Check player collision with world;
 
         if(playerPosition.y < 0 || playerPosition.y > 320 - playerBlock.width){
-            playerPosition.y = 195;
-            playerEntity.components.Physic.vy = 0;
-            playerEntity.components.Physic.ay = 0;
             playerEntity.components.PlayerControled.live = false;
-            scoreEntity.components.Value.value = 0;
-            scoreEntity.components.Value.counting = false;
+            playerEntity.components.PlayerControled.explode = true; 
+            stopLines(entities);
         }
 
         // Check player collision with Other blocks;
@@ -34,11 +35,9 @@ const collisionSystem = {
 
             if(kt.Engine.Physics.rectCollision(playerPosition.x, playerPosition.y, playerBlock.width, playerBlock.height,
                enemyPosition.x, enemyPosition.y, enemyBlock.width, enemyBlock.height)){
-                    playerPosition.y = 195;
-                    playerEntity.components.Physic.vy = 0;
-                    playerEntity.components.Physic.ay = 0;
-                    scoreEntity.components.Value.value = 0;
-                    scoreEntity.components.Value.counting = false;
+                    playerEntity.components.PlayerControled.live = false; 
+                    playerEntity.components.PlayerControled.explode = true; 
+                    stopLines(entities);
                 }
         });
 
@@ -61,10 +60,29 @@ const collisionSystem = {
                     // removed for later part
                     //    lineProperties.visible = false;
                     //    lineProperties.destroyed = true;
-                    playerEntity.components.PlayerControled.collided = true;
-                    playerEntity.components.Block.color = line.components.Line.color.value;
+                    if(playerEntity.components.Block.color !== lineProperties.color.value){
+                        playerEntity.components.PlayerControled.collided = true;
+                        playerEntity.components.PlayerControled.live = false; 
+                        playerEntity.components.PlayerControled.explode = true; 
+                        stopLines(entities);
+                        //   kt.Engine.SceneManager.changeScene('GameoverScene');
+                    }
                 }
             });
         }
     }
 };
+
+function stopLines(entities) {
+    entities.filter(entity => entity.components.Block && !entity.components.PlayerControled)
+        .forEach(block => {
+            
+            if(block.components.Particle){
+                block.components.Physic.vx = 0;
+                return;
+            }
+
+            block.components.Physic.vx = 0;
+            block.components.Physic.vy = 0;
+        })
+}

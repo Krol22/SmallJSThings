@@ -1,7 +1,8 @@
 const MenuScene = new kt.Engine.Scene({
     name: 'MenuScene',
     init: init,
-    update: update
+    update: update,
+    destroy: destroy
 });
 
 let menuInputSystem, titleText;
@@ -10,7 +11,7 @@ function init() {
 
     menuInputSystem = {
         tick: function(){
-            if(kt.Engine.InputManager.keys.Space){
+            if(kt.Engine.InputManager.keys[32].isDown){
                 kt.Engine.SceneManager.pushScene('GameScene');
             }
         }
@@ -24,4 +25,8 @@ function update() {
     kt.Engine.Graphics.drawBackground("#111");
     titleText.update();
     menuInputSystem.tick();
+}
+
+function destroy() {
+
 }

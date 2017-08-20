@@ -11,6 +11,11 @@ kt.Engine.EntityComponentSystem = function(entities = [], systems = []){
             system.tick(this.Entities);
         });
     }
+
+    this.destroy = function() {
+        this.Systems = [];
+        this.Entities = [];
+    }
 }
 
 kt.Engine.EntityComponentSystem.prototype.addEntities = function(entities){
