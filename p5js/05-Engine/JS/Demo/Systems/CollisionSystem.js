@@ -10,10 +10,6 @@ const collisionSystem = {
         if(!playerEntity.components.PlayerControled.live)
             return;
 
-        let scoreEntity = entities.filter( entity => {
-            return entity.components.Text;
-        })[0];
-
         let playerPosition = playerEntity.components.Position;
         let playerBlock = playerEntity.components.Block;
 
@@ -44,7 +40,6 @@ const collisionSystem = {
         // Check player collisiion with Lines and add points;
 
         if(!playerEntity.components.PlayerControled.collided){
-            scoreEntity = entities.filter(entity => entity.components.Value)[0];
 
             entities
             .filter( entity => entity.components.Line )
@@ -55,8 +50,10 @@ const collisionSystem = {
                 if(kt.Engine.Physics.segmentsCollistion( playerPosition.x + playerBlock.width, playerPosition.y, playerPosition.x + playerBlock.width, playerPosition.y + playerBlock.height,
                     linePosition.x, linePosition.y, linePosition.x + lineProperties.x1, linePosition.y + lineProperties.y1 )){
 
+
+                    console.log("collision", lineProperties.color.value);
+                    console.log(line)
                     // now it's just a shot with max length of line
-                    scoreEntity.components.Value.value += line.components.Line.color.points;
                     // removed for later part
                     //    lineProperties.visible = false;
                     //    lineProperties.destroyed = true;
@@ -65,7 +62,6 @@ const collisionSystem = {
                         playerEntity.components.PlayerControled.live = false; 
                         playerEntity.components.PlayerControled.explode = true; 
                         stopLines(entities);
-                        //   kt.Engine.SceneManager.changeScene('GameoverScene');
                     }
                 }
             });

@@ -9,16 +9,15 @@ let Scene = new kt.Engine.Scene({
 
 let gameInputSystem = {
     tick: function(entities){
-        let scoreEntity = entities.filter( entity => entity.components.Value)[0];
         let playerEntity = entities.filter( entity => entity.components.PlayerControled)[0];
 
-        if(kt.Engine.InputManager.keys[32].isDown && !scoreEntity.components.Value.counting){
-            scoreEntity.components.Value.counting = true;
-            playerEntity.components.PlayerControled.live = true;
+        if(!playerEntity.components.PlayerControled.live && kt.Engine.InputManager.keys[32].isDown && !kt.Engine.InputManager.keys[32].isPressed){
+            kt.Engine.SceneManager.changeScene('GameScene');
         }
 
         entities.filter( entity => { return entity.components.PlayerControled; }).forEach( entity => {
-            if(kt.Engine.InputManager.keys[32].isDown){
+            
+            if(kt.Engine.InputManager.keys[32].isDown && !kt.Engine.InputManager.keys[32].isPressed){
                 let entityPosition = entity.components.Physic;
                 entityPosition.ay = 0.2;
                 entityPosition.vy = -4.5;
@@ -75,11 +74,6 @@ function init(){
         }
     }
 
-    var scoreEntity = new kt.Engine.Entity()
-                            .addComponent(new PositionComponent(20, 30))
-                            .addComponent(new TextComponent('Score: ', '25px Arial'))
-                            .addComponent(new ValueComponent(0));
-
     let particles = [];
     for(let i = 0; i < 200; i++){
         particles.push(new kt.Engine.Entity().addComponent(new PositionComponent())
@@ -90,15 +84,18 @@ function init(){
 
     gameInputSystem = Object.assign(gameInputSystem, kt.Engine.Systems.InputSystem);
 
-    GameECS.addEntities([playerEntity, scoreEntity]);
+    GameECS.addEntities([playerEntity]);
     GameECS.addEntities(enemies);
     GameECS.addEntities(lines);
     GameECS.addEntities(particles);
     GameECS.addSystems([blocksSystem, collisionSystem, particleSystem, physicsSystem, renderSystem, gameInputSystem, UISystem]);
 
+
+
 }
 
 function update() {
+    kt.Engine.InputManager.update();
     GameECS.update();
 }
 

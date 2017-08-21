@@ -42,18 +42,6 @@ var PlayerControledComponent = function(){
     };
 };
 
-var TextComponent = function(text, font){
-    return {
-        name: 'Text',
-        text,
-        font
-    };
-};
-
-var ValueComponent = function(value) {
-    return { name: 'Value', value };
-};
-
 var LineComponent = function(x1 = 0, y1 = 0, wave, weight = 2){
     return {
         name: 'Line',

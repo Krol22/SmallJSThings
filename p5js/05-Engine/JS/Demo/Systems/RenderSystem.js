@@ -16,15 +16,19 @@ const renderSystem = {
             kt.Engine.EntityComponentSystem.Graphics.draw(entity);
         });
 
-        let playerEntity = entities.filter( entity => entity.components.PlayerControled )[0];
-        if(playerEntity.components.PlayerControled.live)
-            kt.Engine.EntityComponentSystem.Graphics.draw(playerEntity);
-
         entities
         .filter( entity => entity.components.Particle )
         .forEach(particle => {
             kt.Engine.EntityComponentSystem.Graphics.draw(particle);
         })
+
+        let playerEntity = entities.filter( entity => entity.components.PlayerControled )[0];
+        if(playerEntity.components.PlayerControled.live) {
+            kt.Engine.EntityComponentSystem.Graphics.draw(playerEntity);
+        } else {
+            kt.Engine.Graphics.drawBackground('rgba(0, 0, 0, 0.5');
+        }
+
 
     }
 };
